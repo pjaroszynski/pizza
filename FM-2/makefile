@@ -2,12 +2,12 @@ SHELL=/bin/sh
 
 CC=gcc
 
-#CFLAGS = -g -lm -pg -fprofile-arcs -O9 -W -Wall -Winline -DDEBUG=0
+#CFLAGS = -m32 -g -lm -pg -fprofile-arcs -O9 -W -Wall -Winline -DDEBUG=0
 #these are for testing
-#CFLAGS = -g -lm -W -Wall -Winline -O9
+#CFLAGS = -m32 -g -lm -W -Wall -Winline -O9
 
 #these are for maximum speed
-CFLAGS=-g -O9 -lm -fomit-frame-pointer -W -Wall -Winline -DDEBUG=0 -DNDEBUG=1 
+CFLAGS=-m32 -g -O9 -lm -fomit-frame-pointer -W -Wall -Winline -DDEBUG=0 -DNDEBUG=1 
 
 all: ds_ssortr fm_index.a fm_search fm_build
 pizzachili: all build_index run_queries
