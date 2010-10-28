@@ -1,5 +1,6 @@
 CC=g++
-CFLAGS= -W -Wall -pedantic -pedantic-errors -O9 -DNDEBUG
+CFLAGS=-m32 -W -Wall -pedantic -pedantic-errors -O9 -DNDEBUG
+CFLAGS=-m32 -W -Wall -pedantic -pedantic-errors -ggdb3
 
 all: index
 
