@@ -55,7 +55,6 @@ int Oneline_report;   // report time occ and startrow in a single line
 void multi_search(char *pfile_name)
 {
   void read_basic_prologue(bwi_out *);
-  int getline(char **, int *, FILE *);
   int my_getline(char *, int, FILE *);
   FILE *pfile;   // file containing the patterns
   char *pattern;

@@ -107,7 +107,6 @@ int main(int argc, char *argv[])
 void sa_multi_search(char *pfile_name)
 {
   void sa_bin_search(uchar *, int, int *, int *);
-  int getline(char **, int *, FILE *);
   int my_getline(char *, int, FILE *);
   int get_suffix(int);  
   FILE *pfile;   // file containing the patterns

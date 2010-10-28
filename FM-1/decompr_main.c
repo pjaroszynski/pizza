@@ -139,7 +139,6 @@ void read_prologue(bwi_out *s)
 {
   void out_of_mem(char *s);
   int uint_read(void);
-  __inline__ int bit_read(int);
   int int_log2(int);
   bucket_lev1 *sb;  
   int i,rem,k,len;
