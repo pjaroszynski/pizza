@@ -1,0 +1,187 @@
+#!/bin/bash
+
+BI=build_index.c
+RQ=run_queries.c
+
+CC=gcc
+CXX=g++
+CFLAGS="-O2 -lm"
+
+INDICES=(
+    # index lib lang extra_flags
+    "SAu SAu.a CC"
+    "SAc SAc.a CC -m32" # breaks on 64bit
+    "SSA-3.1 SSA.a CXX"
+    "SSA2-1.1 SSA.a CXX"
+    "CCSA CCSA.a CXX -m32" # breaks on 64bit
+    #"CSA csa.a CXX" # doesn't implement the common API
+    #"CSAd csa.a CC" # L doesn't work
+    #"RPSA RPSA.a CXX -m32" # 32bit to use les ram; slooow for big files
+    #"LCSA2 RPSA.a CXX -m32" # 32bit to use less ram; slooow for big files
+    "LZ lzindex.a CC"
+    "LZ-1 lzindex.a CC"
+    "LZ-4 lzindex.a CC" # build_index segfaults for dna.50M
+    "LZ-7 lzindex.a CC"
+    #"FM-1 fmindex.a CC" # doesn't implement the common API
+    "FM-2 fm_index.a CC -m32" # breaks on 64bit
+    "RLFM-1.1 RLFM.a CXX"
+)
+
+die() {
+    echo "$@"
+    exit 1
+}
+
+edo() {
+    if [[ $V == "1" ]] ; then
+        echo "$@"
+    fi
+    "$@"
+}
+
+for_one() {
+    index=$1
+    function=$2
+
+    for entry in "${INDICES[@]}" ; do
+        entry=( $entry )
+        if [[ ${entry[0]} == $index ]] ; then
+            $function "${entry[@]}"
+            return 0
+        fi
+    done
+
+    return 1
+}
+
+for_all() {
+    function=$1
+
+    for entry in "${INDICES[@]}" ; do
+        entry=( $entry )
+        $function "${entry[@]}"
+    done
+}
+
+do_build_tools() {
+    local index=$1 lib=$2 lang=$3
+    shift 3
+    local extra_flags=$@
+    edo ${!lang} $CFLAGS $extra_flags $BI $index/$lib -o build_index || die
+    edo ${!lang} $CFLAGS $extra_flags $RQ $index/$lib -o run_queries || die
+}
+
+build_tools() {
+    rm -f build_index run_queries
+    for_one $1 do_build_tools || die "Building tools failed"
+}
+
+if [[ $# -lt 1 ]] ; then
+    echo "Usage: $0 index_name" >&2
+fi
+
+do_make_lib() {
+    echo " * Building $1:"
+    echo
+    make -C $1 clean
+    make -C $1 || die
+    echo
+    echo " * Done building $1"
+}
+
+make_libs() {
+    for_all do_make_lib
+}
+
+index() {
+    local index=$1 data=$2
+    local ldata=$index/data/$(basename $data)
+
+    edo build_tools $index
+
+    edo mkdir -p $index/data/
+    edo ln -snf ../../$data $ldata
+
+    if ! ls ${ldata}.* &> /dev/null ; then
+        edo ./build_index $ldata $ldata || die "Building index failed"
+    fi
+}
+
+build_reads() {
+    local data=$1 size=$2 count=$3
+    local reads=data/$(basename $data)_${size}_$count
+
+    if ! [[ -f $reads ]] ; then
+        edo ./utils/genpatterns $data $size $count $reads
+    fi
+}
+
+queries() {
+    local index=$1 query=$2 data=$3 size=$4 count=$5
+
+    build_reads $data $size $count
+    edo index $index $data 
+
+    edo ./run_queries $index/data/$(basename $data) $query < ${data}_${size}_$count
+}
+
+do_benchmark() {
+    local index=$1
+
+    echo " * Benchmarking queries for $index"
+    echo
+    for m in 50 100 200 ; do
+        for a in C L ; do
+            for s in 10 15 20 30 40 75 ; do
+                data=data/dna.${m}M
+                bf=benchmarks/${a}_${m}M_${s}
+                echo "  * $a in ${m}M [$s]"
+                echo
+                if grep "$index " $bf &> /dev/null ; then
+                    continue
+                fi
+                mpq=$(queries $index $a $data $s 100000 \
+                    |& tee /dev/stderr | grep "_time/Num_" | cut -d' ' -f 3)
+                echo "$index $mpq" >> $bf
+            done
+        done
+    done
+    echo
+    echo " * Benchmarking $index done"
+}
+
+benchmark() {
+	#rm -f benchmarks/{C,L}*
+
+	for_all do_benchmark
+	#for_one SAc do_benchmark
+}
+
+do_benchmark_index() {
+    local index=$1
+
+    echo " * Benchmarking index building for $index"
+    echo
+
+    for m in 50 100 200 ; do
+        data=data/dna.${m}M
+        bf=benchmarks/I_${m}M
+        echo "  * ${m}M"
+        if grep "$index " $bf &> /dev/null ; then
+            continue
+        fi
+        rm -f ${index}/data/$(basename $data).*
+        compression=$(index $index $data |& tee /dev/stderr | grep "compression" | cut -d' ' -f 4)
+        echo "$index $compression" >> $bf
+    done
+
+    echo
+    echo " * Benchmarking $index done"
+}
+
+benchmark_indices() {
+    #rm -f benchmarks/I*
+    for_all do_benchmark_index
+}
+
+"$@"
