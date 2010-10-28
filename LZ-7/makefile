@@ -5,7 +5,7 @@ FLAGS = -O9 -lm -fomit-frame-pointer -W -Wall -Winline -DDEBUG=0 -DNDEBUG=1
 #FLAGS = -O9 -DINDEXREPORT 
 #FLAGS = -O9 -DINDEXREPORT -DMEMCTRL
 
-all: lzindex.a build_index run_queries 
+all: lzindex.a
 
 build_index: build_index.c lzindex.a
 	gcc $(FLAGS) -o build_index build_index.c lzindex.a
