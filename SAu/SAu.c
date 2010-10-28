@@ -286,8 +286,10 @@ int count(void *index, uchar *pattern, ulong length, ulong *numocc){
      }
      Rraja=L;
   /*}*/
+#if 0
   printf("\n");
   printf("Count: %lu de %lu hasta %lu\n",Rraja-Lraja+1, Lraja, Rraja);fflush(stdout);
+#endif
   (*numocc)=Rraja-Lraja+1;
   return 0;
 }
