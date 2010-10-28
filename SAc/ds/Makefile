@@ -3,7 +3,7 @@ SHELL=/bin/sh
 CC=gcc
 
 #these are for testing
-CFLAGS = -g -W -Wall -Winline -O9
+CFLAGS = -m32 -g -W -Wall -Winline -O9
 
 #these are for maximum speed
 #CFLAGS=-g -O3 -fomit-frame-pointer -W -Wall -Winline \

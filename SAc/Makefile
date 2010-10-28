@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-W -Wall -pedantic -pedantic-errors -O9 -Winline
+CFLAGS=-m32 -W -Wall -pedantic -pedantic-errors -O9 -Winline
 
 all: index
 index: SAc.o ds/ds.o ds/globals.o ds/shallow.o ds/helped.o ds/deep2.o ds/blind2.o
