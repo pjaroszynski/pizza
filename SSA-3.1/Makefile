@@ -10,8 +10,8 @@ all: index
 %.o: %.cpp *.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-index: SSA.o bitarray.o HuffAlphabetRank.o Huffman_Codes.o ds/ds.o ds/globals.o ds/helped.o ds/shallow.o ds/deep2.o ds/blind2.o 
-	ar rc SSA.a SSA.o bitarray.o HuffAlphabetRank.o Huffman_Codes.o ds/ds.o ds/globals.o ds/shallow.o ds/helped.o ds/deep2.o ds/blind2.o
+index: SSA.o bitarray.o HuffAlphabetRank.o Huffman_Codes.o bitrankw32int.o ds/ds.o ds/globals.o ds/helped.o ds/shallow.o ds/deep2.o ds/blind2.o
+	ar rc SSA.a $^
 clean:
 	rm -f *~ *.o ; cd ds ; make -f Makefile clean ; cd ..
 cleanall:
