@@ -1,0 +1,35 @@
+
+This is the implementation of the LZ-index \cite[1, 2] data structure.
+
+This code belongs to Diego Arroyuelo and Gonzalo Navarro, 2006.
+
+It can be freely used for teaching and research purposes. Use for any other
+purpose requires written permission of Diego Arroyuelo or Gonzalo Navarro.
+
+The code can also be freely distributed, provided this notice is kept attached
+in unaltered form.
+
+We give no guarantee that the code is free of bugs or that it fits any particular
+purpose.
+
+Please read the COPYRIGHT file.
+
+
+To build: make
+
+It generates the LZ-index library in the file "lzindex.a"
+
+To use: To use the LZ-index library, please compile your main program along with
+the file "lzindex.a". See for example the case of file "run_queries.c" in 
+"makefile".
+
+
+References:
+
+[1] G. Navarro. Indexing text using the Ziv-Lempel trie. Technical Report 
+    TR/DCC-2002-2, Dept. of Computer Science, Univ. de Chile, 2002.
+    ftp://ftp.dcc.uchile.cl/pub/users/gnavarro/lzindex.ps.gz.
+
+[2] G. Navarro. Indexing text using the Ziv-Lempel trie. Journal of Discrete
+    Algorithms (JDA), 2(1):87--114, 2004.
+
