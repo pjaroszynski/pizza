@@ -1,0 +1,47 @@
+
+This is the implementation of a reduced version of the Navarro's
+LZ-index data structure. For a text T of length u, this version
+requires (2+epsilon)uH_k + o(u log(sigma)) bits, where H_k is the
+k-th order emperical entropy of T, and sigma is the alphabet size.
+
+This code belongs to Diego Arroyuelo and Gonzalo Navarro, 2006.
+
+It can be freely used for teaching and research purposes. Use for any other
+purpose requires written permission of Diego Arroyuelo or Gonzalo Navarro.
+
+The code can also be freely distributed, provided this notice is kept attached
+in unaltered form.
+
+We give no guarantee that the code is free of bugs or that it fits any particular
+purpose.
+
+Please read the COPYRIGHT file.
+
+To build: make
+
+It generates the LZ-index library in the file "lzindex.a"
+
+To use: To use the LZ-index library, please compile your main program along with
+the file "lzindex.a". For example, if your program is "run_queries.c", then you
+must use:
+
+# gcc -o run_queries run_queries.c lzindex.a
+
+The space requirement of the original LZ-index is due mainly to four arrays.
+This new LZ-index version stores only two of these arrays, and simulates the 
+two remaining arrays using the Munro et al. succinct data structure for 
+permutations. Hence, this index has a parameter (1/epsilon) >= 1 which indicates
+the sampling rate of the inverse-permutation data structures. This parameter can 
+be  set by the user at construction time to allow space/time trade-offs. The size 
+of the resulting index is smaller as this parameter is larger.
+
+A command-line example for the "build_index" program is:
+
+# build_index text index_name 5
+
+By default, the parameter take the value (1/epsilon) = 4. 
+
+
+
+
+
