@@ -1,0 +1,173 @@
+
+/*---------------------------------------------------
+ BEGIN template_qsort3
+ ---------------------------------------------------*/
+
+#define mycat(aaa,bbb) aaa##bbb
+#define mycat2(ppp,qqq) mycat(ppp,qqq)
+
+#if defined(TEMPLATE) && defined(CMP) && defined(FMAP)
+#else
+#error qsort3.template: define TEMPLATE, CMP and FMAP
+#endif
+
+static
+void mycat2(TEMPLATE,_qsort3_basis_xyzzy) ( Int32 lo, Int32 hi )
+{
+   Int32 i, j, tmp;
+
+   assert (lo <= hi);
+
+   if (hi - lo > 3) {
+      for ( i = hi-4; i >= lo; i-- ) {
+         tmp = FMAP[i];
+         for ( j = i+4; j <= hi && CMP(tmp,FMAP[j])>0; j += 4 )
+            FMAP[j-4] = FMAP[j];
+         FMAP[j-4] = tmp;
+      }
+   }
+
+   for ( i = hi-1; i >= lo; i-- ) {
+      tmp = FMAP[i];
+      for ( j = i+1; j <= hi && CMP(tmp,FMAP[j])>0; j++ )
+         FMAP[j-1] = FMAP[j];
+      FMAP[j-1] = tmp;
+   }
+}
+
+
+#define fswap(zz1, zz2) \
+   { Int32 zztmp = zz1; zz1 = zz2; zz2 = zztmp; }
+
+#define fvswap(zzp1, zzp2, zzn)       \
+{                                     \
+   Int32 yyp1 = (zzp1);               \
+   Int32 yyp2 = (zzp2);               \
+   Int32 yyn  = (zzn);                \
+   while (yyn > 0) {                  \
+      fswap(FMAP[yyp1], FMAP[yyp2]);  \
+      yyp1++; yyp2++; yyn--;          \
+   }                                  \
+}
+
+
+#define fmin(a,b) ((a) < (b)) ? (a) : (b)
+
+#define fpush(lz,hz) { stackLo[sp] = lz; \
+                       stackHi[sp] = hz; \
+                       sp++; }
+
+#define fpop(lz,hz) { sp--;              \
+                      lz = stackLo[sp];  \
+                      hz = stackHi[sp]; }
+
+#define QSORT3_SMALL_THRESH 10
+#define QSORT3_STACK_SIZE   100
+
+
+static
+void mycat2(TEMPLATE,_qsort3) ( Int32   loSt, 
+                                Int32   hiSt )
+{
+   Int32 unLo, unHi, ltLo, gtHi, n, m;
+   Int32 sp, lo, hi;
+   UInt32 med, r, r3;
+   Int32 stackLo[QSORT3_STACK_SIZE];
+   Int32 stackHi[QSORT3_STACK_SIZE];
+
+   r = 0;
+
+   sp = 0;
+   fpush ( loSt, hiSt );
+
+   while (sp > 0) {
+
+      assert ( sp < QSORT3_STACK_SIZE );
+
+      fpop ( lo, hi );
+
+      if (hi - lo < QSORT3_SMALL_THRESH) {
+         if (lo <= hi) {
+            mycat2(TEMPLATE,_qsort3_basis_xyzzy) ( lo, hi );
+         }
+         continue;
+      }
+
+      /* Random partitioning.  Median of 3 sometimes fails to
+         avoid bad cases.  Median of 9 seems to help but 
+         looks rather expensive.  This too seems to work but
+         is cheaper.  Guidance for the magic constants 
+         7621 and 32768 is taken from Sedgewick's algorithms
+         book, chapter 35.
+      */
+      r = ((r * 7621) + 1) % 32768;
+      r3 = r % 3;
+      if (r3 == 0) med = FMAP[lo]; else
+      if (r3 == 1) med = FMAP[(lo+hi)>>1]; else
+                   med = FMAP[hi];
+
+      unLo = ltLo = lo;
+      unHi = gtHi = hi;
+
+      while (1) {
+         while (1) {
+            if (unLo > unHi) break;
+            n = CMP ( FMAP[unLo], med );
+            if (n == 0) { 
+               fswap(FMAP[unLo], FMAP[ltLo]); 
+               ltLo++; unLo++; 
+               continue; 
+            };
+            if (n > 0) break;
+            unLo++;
+         }
+         while (1) {
+            if (unLo > unHi) break;
+            n = CMP ( FMAP[unHi], med );
+            if (n == 0) { 
+               fswap(FMAP[unHi], FMAP[gtHi]); 
+               gtHi--; unHi--; 
+               continue; 
+            };
+            if (n < 0) break;
+            unHi--;
+         }
+         if (unLo > unHi) break;
+         fswap(FMAP[unLo], FMAP[unHi]); unLo++; unHi--;
+      }
+
+      assert ( unHi == unLo-1 );
+
+      if (gtHi < ltLo) continue;
+
+      n = fmin(ltLo-lo, unLo-ltLo); fvswap(lo, unLo-n, n);
+      m = fmin(hi-gtHi, gtHi-unHi); fvswap(unLo, hi-m+1, m);
+
+      n = lo + unLo - ltLo - 1;
+      m = hi - (gtHi - unHi) + 1;
+
+      if (n - lo > hi - m) {
+         fpush ( lo, n );
+         fpush ( m, hi );
+      } else {
+         fpush ( m, hi );
+         fpush ( lo, n );
+      }
+   }
+}
+
+
+#undef fmin
+#undef fpush
+#undef fpop
+#undef fswap
+#undef fvswap
+#undef QSORT3_SMALL_THRESH
+#undef QSORT3_STACK_SIZE
+#undef TEMPLATE
+#undef FMAP
+#undef CMP
+
+/*---------------------------------------------------
+ END template_qsort3
+ ---------------------------------------------------*/
