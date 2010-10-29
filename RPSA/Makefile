@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS= -W -Wall -pedantic -pedantic-errors -O3 -DNDEBUG
+CFLAGS=-m32 -W -Wall -pedantic -pedantic-errors -O3 -DNDEBUG
 #CFLAGS= -g
 
 # pattern rule for all objects files
