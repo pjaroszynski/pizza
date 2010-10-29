@@ -883,7 +883,11 @@ BPE::BPE(ulong *a, ulong _n, ulong _max_phrase, double _cutoff, bool _verbose) {
   if (verbose) { printf("Shift:\n"); fflush(stdout); }
   shift_it();
   if (verbose) { printf("Punteros:\n"); fflush(stdout); }
-  pointer();
+  if (pointer()) {
+      printf("pointer() failed");
+      exit(1);
+  }
+
   if (verbose) { printf("Ini Treap:\n"); fflush(stdout); }
   treapme();
   if (verbose) { printf("Compress:\n"); fflush(stdout); }
