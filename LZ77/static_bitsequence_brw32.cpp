@@ -22,6 +22,8 @@
 #include "static_bitsequence_brw32.h"
 #include <cassert>
 #include <cmath>
+#include <cstdio>
+#include <cstdlib>
 
 namespace lz77index{
 namespace basics{

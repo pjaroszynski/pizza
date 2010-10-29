@@ -21,6 +21,8 @@
 
 #include "static_bitsequence.h"
 
+#include <cstdio>
+
 namespace lz77index{
 namespace basics{
 

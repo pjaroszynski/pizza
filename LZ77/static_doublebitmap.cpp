@@ -20,6 +20,9 @@
  */
 
 #include "static_doublebitmap.h"
+
+#include <cstdio>
+
 namespace lz77index{
 namespace basics{
 

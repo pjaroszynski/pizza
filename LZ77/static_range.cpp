@@ -21,6 +21,7 @@
 
 #include "static_range.h"
 #include <cstring>
+#include <cstdio>
 
 namespace lz77index{
 

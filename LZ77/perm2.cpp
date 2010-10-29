@@ -22,6 +22,8 @@
 #include "perm2.h"
 #include <cmath>
 #include <cassert>
+#include <cstdlib>
+#include <cstdio>
 
 namespace lz77index{
 namespace basics{

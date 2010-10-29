@@ -13,6 +13,8 @@
 #include "directcodes.h"
 
 #include <string>
+#include <cstring>
+
 namespace lz77index{
 static_selfindex_lz77* static_selfindex_lz77::build(char* filename, char* filenameidx, unsigned char binaryRev, unsigned char binarySst, unsigned char store_sst_ids){
     unsigned char bits;

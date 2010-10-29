@@ -23,6 +23,7 @@
 #include "basics.h"
 #include <cstring>
 #include <cstdio>
+#include <cstdlib>
 
 namespace lz77index{
 

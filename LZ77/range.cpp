@@ -11,6 +11,9 @@
 #include "static_bitsequence_brw32.h"
 #include "range.h"
 
+#include <cstdlib>
+#include <cstdio>
+
 #define W (8*sizeof(unsigned int))
 #define bitsW 5 /* Be aware of this */
 
